@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 const Home = () => {
   const [cars, setCars] = useState(null)
   const [isLoading, setLoading] = useState(false)
+  let totSales = 0
 
   useEffect(() => {
     setLoading(true)
@@ -33,7 +34,6 @@ const Home = () => {
     const sales = inventory.filter(stock => stock.price)
     console.log('sales: ', sales)
 
-    let totSales = 0;
     sales.map((car) => {
       totSales += Number(car.price)
     })
