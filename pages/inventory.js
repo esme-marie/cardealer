@@ -9,12 +9,16 @@ const Inventory = () => {
 
     useEffect(() => {
         setLoading(true)
-        fetch('api/cars')
-            .then((res) => res.json())
-            .then((data) => {
-                setCars(data)
-                setLoading(false)
-            })
+        try {
+            fetch('api/cars')
+                .then((res) => res.json())
+                .then((data) => {
+                    setCars(data)
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }, [])
     console.log('cars: ', cars)
 
@@ -28,7 +32,7 @@ const Inventory = () => {
             });
 
             // reload the page to load new info
-            Router.reload() 
+            Router.reload()
 
         } catch (error) {
             console.log(error);
@@ -50,7 +54,7 @@ const Inventory = () => {
         const balance = inventory.filter(stock => stock.price)
         console.log('balance: ', balance)
     }
-    
+
     if (isLoading) return <p>Loading...</p>
     if (!cars) return <p>No data available</p>
 

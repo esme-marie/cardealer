@@ -11,12 +11,16 @@ const Sales = () => {
 
     useEffect(() => {
         setLoading(true)
-        fetch('api/cars')
-            .then((res) => res.json())
-            .then((data) => {
-                setCars(data)
-                setLoading(false)
-            })
+        try {
+            fetch('api/cars')
+                .then((res) => res.json())
+                .then((data) => {
+                    setCars(data)
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }, [])
     console.log('cars: ', cars)
 
@@ -34,7 +38,7 @@ const Sales = () => {
             });
 
             // reload the page to load new info
-            Router.reload() 
+            Router.reload()
 
         } catch (error) {
             // Stop sold state

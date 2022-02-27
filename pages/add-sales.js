@@ -13,12 +13,16 @@ const AddSales = () => {
 
     useEffect(() => {
         setLoading(true)
-        fetch('api/cars')
-            .then((res) => res.json())
-            .then((data) => {
-                setCars(data)
-                setLoading(false)
-            })
+        try {
+            fetch('api/cars')
+                .then((res) => res.json())
+                .then((data) => {
+                    setCars(data)
+                    setLoading(false)
+                })
+        } catch (error) {
+            console.log(error);
+        }
     }, [])
     console.log('cars: ', cars)
 
@@ -48,7 +52,7 @@ const AddSales = () => {
                 method: 'PUT',
                 body: carId
             });
-            
+
             // re-direct page to /sales
             return router.push('/sales');
         } catch (error) {
@@ -72,9 +76,9 @@ const AddSales = () => {
                     <button className={styles.sold} onClick={() => handleSales(value.value)}>Sold</button>
                 </div>
             </div>
-            
+
         </>
-        
+
     );
 }
 

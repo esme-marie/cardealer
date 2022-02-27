@@ -9,12 +9,16 @@ const Home = () => {
 
   useEffect(() => {
     setLoading(true)
-    fetch('api/cars')
-      .then((res) => res.json())
-      .then((data) => {
-        setCars(data)
-        setLoading(false)
-      })
+    try {
+      fetch('api/cars')
+        .then((res) => res.json())
+        .then((data) => {
+          setCars(data)
+          setLoading(false)
+        })
+    } catch (error) {
+      console.log(error);
+    }
   }, [])
   console.log('cars: ', cars)
 
