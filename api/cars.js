@@ -1,4 +1,4 @@
-const { connectToDatabase } = require('../../lib/mongodb');
+const { connectToDatabase } = require('../lib/mongodb');
 const ObjectId = require('mongodb').ObjectId;
 
 export default async function handler(req, res) {
