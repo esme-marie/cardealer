@@ -1,3 +1,27 @@
+# Car Dealer
+An inventory & sales listing record web application for a car dealer
+
+### Tech
+NextJs, Javascript, MongoDB
+
+## Web Flow
+### Homepage
+- Welcome page with page navigation
+- Total sales displayed
+
+### Inventory
+- User can add car into inventory
+- Entry can be deleted
+- If a car from the inventory list is sold, that car will be removed from inventory listing and shown in sales listing
+
+### Sales
+- User can add sales by selecting cars that are available in the inventory
+- Sales listing will show car details of that sales record
+- Record can be deleted, and deleted record will push that car back info inventory listing
+- Total sales will be reflected on the homepage
+
+-----
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
