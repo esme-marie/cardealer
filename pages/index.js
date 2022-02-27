@@ -1,29 +1,46 @@
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import { connectToDatabase } from '../lib/mongodb'
+import { useState, useEffect } from 'react';
 
-const Home = ({ cars }) => {
+const Home = () => {
+  const [cars, setCars] = useState(null)
+  const [isLoading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(true)
+    fetch('api/cars')
+      .then((res) => res.json())
+      .then((data) => {
+        setCars(data)
+        setLoading(false)
+      })
+  }, [])
   console.log('cars: ', cars)
 
-  const inventory = cars.map((car) => {
-    let stock = {}
-    if (car.sold === true) {
+  if (cars) {
+    const inventory = cars.message.map((car) => {
+      let stock = {}
+      if (car.sold === true) {
         stock["id"] = car._id;
         stock["price"] = car.price
-    } else {
+      } else {
         stock["id"] = car._id;
         stock["price"] = ""
-    }
-    return stock;
-  });
-  const sales = inventory.filter(stock => stock.price)
-  console.log('sales: ', sales)
+      }
+      return stock;
+    });
 
-  let totSales = 0;
-  sales.map((car) => {
-    totSales += Number(car.price)
-  })
-  console.log('totSales: ', totSales)
+    const sales = inventory.filter(stock => stock.price)
+    console.log('sales: ', sales)
+
+    let totSales = 0;
+    sales.map((car) => {
+      totSales += Number(car.price)
+    })
+    console.log('totSales: ', totSales)
+  }
+
+  if (isLoading) return <p>Loading...</p>
 
   return (
     <div className="center">
@@ -36,32 +53,32 @@ const Home = ({ cars }) => {
   );
 }
 
-export async function getServerSideProps() {
-  // // get the current environment
-  // let dev = process.env.NODE_ENV !== 'production';
-  // let { DEV_URL, PROD_URL } = process.env;
+// export async function getServerSideProps() {
+//   // // get the current environment
+//   // let dev = process.env.NODE_ENV !== 'production';
+//   // let { DEV_URL, PROD_URL } = process.env;
 
-  // // request cars from api
-  // // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
+//   // // request cars from api
+//   // // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
 
-  // // extract the data
-  // let data = await response.json();
+//   // // extract the data
+//   // let data = await response.json();
 
-  // console.log('data: ', data)
+//   // console.log('data: ', data)
 
-  let { db } = await connectToDatabase();
-    // fetch the cars
-    let cars = await db
-        .collection('cars')
-        .find({})
-        .sort({ addedOn: -1 })
-        .toArray();
+//   let { db } = await connectToDatabase();
+//     // fetch the cars
+//     let cars = await db
+//         .collection('cars')
+//         .find({})
+//         .sort({ addedOn: -1 })
+//         .toArray();
 
-  return {
-    props: {
-        cars: JSON.parse(JSON.stringify(cars)),
-    },
-  };
-};
- 
+//   return {
+//     props: {
+//         cars: JSON.parse(JSON.stringify(cars)),
+//     },
+//   };
+// };
+
 export default Home;

@@ -1,11 +1,22 @@
-import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-import { connectToDatabase } from '../lib/mongodb'
+import { useState, useEffect } from 'react';
+import Router from "next/router";
 
-const Inventory = ({ cars }) => {
+const Inventory = () => {
+    const [cars, setCars] = useState(null)
+    const [isLoading, setLoading] = useState(false)
+
+    useEffect(() => {
+        setLoading(true)
+        fetch('api/cars')
+            .then((res) => res.json())
+            .then((data) => {
+                setCars(data)
+                setLoading(false)
+            })
+    }, [])
     console.log('cars: ', cars)
-    const router = useRouter();
 
     // Delete car
     const deleteCar = async (carId) => {
@@ -16,26 +27,32 @@ const Inventory = ({ cars }) => {
                 body: carId,
             });
 
-            // reload the page
-            return router.push(router.asPath);
+            // reload the page to load new info
+            Router.reload() 
+
         } catch (error) {
             console.log(error);
         }
     };
 
-    const inventory = cars.map((car) => {
-        let stock = {}
-        if (car.sold === false) {
-            stock["id"] = car._id;
-            stock["price"] = car.price
-        } else {
-            stock["id"] = car._id;
-            stock["price"] = ""
-        }
-        return stock;
-      });
-      const balance = inventory.filter(stock => stock.price)
-      console.log('balance: ', balance)
+    if (cars) {
+        const inventory = cars.message.map((car) => {
+            let stock = {}
+            if (car.sold === false) {
+                stock["id"] = car._id;
+                stock["price"] = car.price
+            } else {
+                stock["id"] = car._id;
+                stock["price"] = ""
+            }
+            return stock;
+        });
+        const balance = inventory.filter(stock => stock.price)
+        console.log('balance: ', balance)
+    }
+    
+    if (isLoading) return <p>Loading...</p>
+    if (!cars) return <p>No data available</p>
 
     return (
         <>
@@ -52,13 +69,13 @@ const Inventory = ({ cars }) => {
                     <h2 className="center">No stock in hand.</h2>
                 ) : (
                     <ul className="noBullets">
-                        {cars.map((car, i) => (
+                        {cars.message.map((car, i) => (
                             <li key={i}>
                                 {!car.sold ? (
                                     <>
                                         <span className={styles.car}>{car.brand} {car.model} <b className={styles.sku}>[SKU: {car.sku}]</b></span>
                                         <div>MYR {Intl.NumberFormat("en-US", { minimumFractionDigits: 2 }).format(car.price)}</div>
-                                        <small className="date">{new Date(car.addedOn).toLocaleDateString()}</small><br/>
+                                        <small className="date">{new Date(car.addedOn).toLocaleDateString()}</small><br />
                                         <button className={styles.delete} type="button" onClick={() => deleteCar(car['_id'])}>Delete</button>
                                         <hr className="divider"></hr>
                                     </>
@@ -69,36 +86,36 @@ const Inventory = ({ cars }) => {
                 )}
             </div>
         </>
-        
+
     );
 }
 
-export async function getServerSideProps() {
-    // // get the current environment
-    // let dev = process.env.NODE_ENV !== 'production';
-    // let { DEV_URL, PROD_URL } = process.env;
+// export async function getServerSideProps() {
+//     // // get the current environment
+//     // let dev = process.env.NODE_ENV !== 'production';
+//     // let { DEV_URL, PROD_URL } = process.env;
 
-    // // request cars from api
-    // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
+//     // // request cars from api
+//     // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
 
-    // // extract the data
-    // let data = await response.json();
+//     // // extract the data
+//     // let data = await response.json();
 
-    // console.log('data: ', data)
+//     // console.log('data: ', data)
 
-    let { db } = await connectToDatabase();
-    // fetch the cars
-    let cars = await db
-        .collection('cars')
-        .find({})
-        .sort({ addedOn: -1 })
-        .toArray();
+//     let { db } = await connectToDatabase();
+//     // fetch the cars
+//     let cars = await db
+//         .collection('cars')
+//         .find({})
+//         .sort({ addedOn: -1 })
+//         .toArray();
 
-    return {
-        props: {
-            cars: JSON.parse(JSON.stringify(cars)),
-        },
-    };
-};
- 
+//     return {
+//         props: {
+//             cars: JSON.parse(JSON.stringify(cars)),
+//         },
+//     };
+// };
+
 export default Inventory;

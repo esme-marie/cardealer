@@ -3,27 +3,41 @@ import Select from 'react-select';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
-import { connectToDatabase } from '../lib/mongodb'
 
 const AddSales = ({ cars }) => {
-    console.log('cars: ', cars)
-    const [value, setValue] = useState('');
-    const router = useRouter();
+    const [cars, setCars] = useState(null)
+    const [isLoading, setLoading] = useState(false)
+    const [value, setValue] = useState('')
+    const router = useRouter()
+    const selectOptions = []
 
-    const options = cars.map((car) => {
-        let stock = {}
-        if (car.sold === false) {
-            stock["value"] = car._id;
-            stock["label"] = car.brand + ' ' + car.model + ' ' + '[' + car.sku + ']' + ' MYR' + Intl.NumberFormat("en-US", { minimumFractionDigits: 2 }).format(car.price)
-        } else {
-            stock["value"] = car._id;
-            stock["label"] = ""
-        }
-        return stock;
-    });
-    const selectOptions = options.filter(stock => stock.label)
-    console.log('options: ', options)
-    console.log('selectOptions: ', selectOptions)
+    useEffect(() => {
+        setLoading(true)
+        fetch('api/cars')
+            .then((res) => res.json())
+            .then((data) => {
+                setCars(data)
+                setLoading(false)
+            })
+    }, [])
+    console.log('cars: ', cars)
+
+    if (cars) {
+        const options = cars.message.map((car) => {
+            let stock = {}
+            if (car.sold === false) {
+                stock["value"] = car._id;
+                stock["label"] = car.brand + ' ' + car.model + ' ' + '[' + car.sku + ']' + ' MYR' + Intl.NumberFormat("en-US", { minimumFractionDigits: 2 }).format(car.price)
+            } else {
+                stock["value"] = car._id;
+                stock["label"] = ""
+            }
+            return stock;
+        });
+        selectOptions = options.filter(stock => stock.label)
+        console.log('options: ', options)
+        console.log('selectOptions: ', selectOptions)
+    }
 
     // Add sales
     const handleSales = async (carId) => {
@@ -41,8 +55,10 @@ const AddSales = ({ cars }) => {
             // Stop sold state
             console.log(error)
         }
-
     };
+
+    if (isLoading) return <p>Loading...</p>
+    if (!cars) return <p>No data available</p>
 
     return (
         <>
@@ -62,32 +78,32 @@ const AddSales = ({ cars }) => {
     );
 }
 
-export async function getServerSideProps(ctx) {
-    // // get the current environment
-    // let dev = process.env.NODE_ENV !== 'production';
-    // let { DEV_URL, PROD_URL } = process.env;
+// export async function getServerSideProps(ctx) {
+//     // // get the current environment
+//     // let dev = process.env.NODE_ENV !== 'production';
+//     // let { DEV_URL, PROD_URL } = process.env;
 
-    // // request cars from api
-    // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
+//     // // request cars from api
+//     // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
 
-    // // extract the data
-    // let data = await response.json();
+//     // // extract the data
+//     // let data = await response.json();
 
-    // console.log('data: ', data)
+//     // console.log('data: ', data)
 
-    let { db } = await connectToDatabase();
-    // fetch the cars
-    let cars = await db
-        .collection('cars')
-        .find({})
-        .sort({ addedOn: -1 })
-        .toArray();
+//     let { db } = await connectToDatabase();
+//     // fetch the cars
+//     let cars = await db
+//         .collection('cars')
+//         .find({})
+//         .sort({ addedOn: -1 })
+//         .toArray();
 
-    return {
-        props: {
-            cars: JSON.parse(JSON.stringify(cars)),
-        },
-    };
-};
+//     return {
+//         props: {
+//             cars: JSON.parse(JSON.stringify(cars)),
+//         },
+//     };
+// };
  
 export default AddSales;
