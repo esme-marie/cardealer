@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         }
     }
 }
-
 async function getCars(req,res){
     try {
         // connect to the database

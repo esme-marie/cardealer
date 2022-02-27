@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
+import { connectToDatabase } from '../lib/mongodb'
 
 const AddSales = ({ cars }) => {
     console.log('cars: ', cars)
@@ -62,21 +63,29 @@ const AddSales = ({ cars }) => {
 }
 
 export async function getServerSideProps(ctx) {
-    // get the current environment
-    let dev = process.env.NODE_ENV !== 'production';
-    let { DEV_URL, PROD_URL } = process.env;
+    // // get the current environment
+    // let dev = process.env.NODE_ENV !== 'production';
+    // let { DEV_URL, PROD_URL } = process.env;
 
-    // request cars from api
-    let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
+    // // request cars from api
+    // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
 
-    // extract the data
-    let data = await response.json();
+    // // extract the data
+    // let data = await response.json();
 
-    console.log('data: ', data)
+    // console.log('data: ', data)
+
+    let { db } = await connectToDatabase();
+    // fetch the cars
+    let cars = await db
+        .collection('cars')
+        .find({})
+        .sort({ addedOn: -1 })
+        .toArray();
 
     return {
         props: {
-            cars: data['message'],
+            cars: JSON.parse(JSON.stringify(cars)),
         },
     };
 };
