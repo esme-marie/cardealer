@@ -53,32 +53,4 @@ const Home = () => {
   );
 }
 
-// export async function getServerSideProps() {
-//   // // get the current environment
-//   // let dev = process.env.NODE_ENV !== 'production';
-//   // let { DEV_URL, PROD_URL } = process.env;
-
-//   // // request cars from api
-//   // // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
-
-//   // // extract the data
-//   // let data = await response.json();
-
-//   // console.log('data: ', data)
-
-//   let { db } = await connectToDatabase();
-//     // fetch the cars
-//     let cars = await db
-//         .collection('cars')
-//         .find({})
-//         .sort({ addedOn: -1 })
-//         .toArray();
-
-//   return {
-//     props: {
-//         cars: JSON.parse(JSON.stringify(cars)),
-//     },
-//   };
-// };
-
 export default Home;

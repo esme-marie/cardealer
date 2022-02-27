@@ -27,7 +27,6 @@ const AddInventory = () => {
             sku,
             price,
             sold: false,
-            salesRef: '',
             addedOn: new Date().toISOString(),
             soldOn: new Date().toISOString(),
         };
