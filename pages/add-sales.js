@@ -63,12 +63,11 @@ const AddSales = ({ cars }) => {
 
 export async function getServerSideProps(ctx) {
     // get the current environment
-    // let dev = process.env.NODE_ENV !== 'production';
-    // let { DEV_URL, PROD_URL } = process.env;
+    let dev = process.env.NODE_ENV !== 'production';
+    let { DEV_URL, PROD_URL } = process.env;
 
-    // // request cars from api
-    // let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
-    let response = await fetch('https://cardealer-esme-marie.vercel.app/api/cars');
+    // request cars from api
+    let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/cars`);
 
     // extract the data
     let data = await response.json();
