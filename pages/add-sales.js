@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import Link from 'next/link';
 
-const AddSales = ({ cars }) => {
+const AddSales = () => {
     const [cars, setCars] = useState(null)
     const [isLoading, setLoading] = useState(false)
     const [value, setValue] = useState('')
