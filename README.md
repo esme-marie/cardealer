@@ -4,6 +4,9 @@ An inventory & sales listing record web application for a car dealer
 ### Tech
 NextJs, Javascript, MongoDB
 
+### Deployed on
+[Vercel](https://cardealer-esme-marie.vercel.app/)
+
 ## Web Flow
 ### Homepage
 - Welcome page with page navigation
