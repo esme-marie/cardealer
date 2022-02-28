@@ -75,7 +75,7 @@ async function updateCar(req, res) {
             {
                 _id: new ObjectId(req.body),
             },
-            [{ $set: { sold: {$eq:[false,"$sold"]} } }]
+            [{ $set: { sold: {$eq:[false,"$sold"]}, soldOn: new Date().toISOString() } }]
         );
 
         // return a message
